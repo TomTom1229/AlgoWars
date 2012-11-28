@@ -2,7 +2,6 @@
 
 from itertools import *
 from sys import maxint
-import math 
 
 def getMatrix(fileName):
 	allRows = list()
@@ -24,7 +23,7 @@ def getDistMatrix(num):
 	return allDists
 
 def solve(matrix): 
-	orders = permutations(range(1,len(matrix)+1)) #Because of inclusion and zero based indices
+	orders = permutations(range(1,len(matrix)+1))
 	shortestDistance = maxint
 	distMatrix = getDistMatrix(len(matrix))
 	correctOrder = list()
