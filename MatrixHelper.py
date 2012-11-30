@@ -3,6 +3,8 @@
 from itertools import *
 from sys import maxint
 
+usedList = {}
+
 def getMatrix(fileName):
 	allRows = list()
 	theData = open(fileName)
@@ -35,8 +37,19 @@ def solve(matrix):
 	return [correctOrder, shortestDistance]
 
 def getDist(order, matrix, distMatrix):
+	global usedList
 	dist = 0
 	for i in range(0,len(order)):
-		for j in range(i,len(distMatrix[i])):
-			dist += matrix[order[i]-1][order[j]-1] * distMatrix[i][j]	
+		whatsLeft = ''.join(str(x) for x in order[i:])
+		if (whatsLeft in usedList):
+			print "Was Dynamic"
+			dist += usedList[whatsLeft]
+			break
+		else:
+			print "Wasn't Dynamic"
+			thisDist = 0
+			for j in range(i,len(distMatrix[i])):
+				thisDist += matrix[order[i]-1][order[j]-1] * distMatrix[i][j]
+			usedList[whatsLeft] = thisDist
+			dist += thisDist
 	return dist	
