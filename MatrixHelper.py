@@ -2,8 +2,7 @@
 
 from itertools import *
 from sys import maxint
-from multiprocessing import cpu_count
-import threading
+import random
 
 usedList = {}
 
@@ -27,14 +26,15 @@ def getDistMatrix(num):
 	return allDists
 
 def solve(matrix):
-	orders = permutations(range(1,len(matrix)+1)) # All Possible
 	distMatrix = getDistMatrix(len(matrix))
-	if(len(matrix) > 8):
-		orders = breakAbsoluteSolution(orders, matrix)
+	if(len(matrix) > 10):
+		orders = getSubsetOfAllPermutations(len(matrix))
+	else:
+		orders = list(permutations(range(1,len(matrix)+1)))
+		#orders = breakAbsoluteSolution(orders, matrix)
 	print(len(orders))
 	shortestDistance = maxint
 	correctOrder = list()
-	numDone = 0
 	for order in orders:
 		dist = getDist(order[::-1], matrix, distMatrix) # taking advantage of lexigraphic ordering
 		if(dist < shortestDistance):
@@ -76,37 +76,13 @@ def reorderMatrix(order, matrix):
 		newMatrix.append(row)
 	return newMatrix
 
-#Assumption! Higher values near the diagonal are more likely to render the solution
-def breakAbsoluteSolution(orders, matrix):
-	slimmedOrders = list()
-	orders = HighestTogether(orders)
-	for order in slimmedOrders:
-		thisDistMatrix = reorderMatrix(order, matrix)
-		if(hasHighestOnDiagonal(thisDistMatrix)):
-			slimmedOrders.append(order)
-	return slimmedOrders
-
-def highestTogether(orders, matrix):
-	i = -1
-	values = [sumRow(x, i) for x in matrix]
-	values = sorted(values, key = lambda row : row[1])		
-
-def sumRow(row, i):
-	i += 1
-	return (sum([int(x) for x in row]),i)  
-
-def hasHighestOnDiagonal(distMatrix):
-	numToCheck = int(.2 * len(distMatrix))
-	itDoes = True
-	for i in range(0,len(distMatrix)):
-		thisOneDoes = False
-		highest = 0
-		for el in distMatrix[i]:
-			if(highest < el):
-				highest = el
-		for j in (i-numToCheck,i+numToCheck+1):
-			if(j > -1 and j < len(distMatrix)):
-				if(distMatrix[i][j] == highest):
-					thisOneDoes = True
-		itDoes = itDoes and thisOneDoes
-	return itDoes
+def getSubsetOfAllPermutations(num):
+	subset = list()
+	theElements = range(1,num+1)
+	numToSubset = 40320 #8!
+	while numToSubset:
+		random.shuffle(theElements)
+		if (theElements not in subset and theElements[::-1] not in subset):
+			subset.append(list(theElements))
+			numToSubset -= 1
+	return subset
