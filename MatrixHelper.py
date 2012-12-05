@@ -32,7 +32,6 @@ def solve(matrix):
 	else:
 		orders = list(permutations(range(1,len(matrix)+1)))
 		#orders = breakAbsoluteSolution(orders, matrix)
-	print(len(orders))
 	shortestDistance = maxint
 	correctOrder = list()
 	for order in orders:
@@ -40,7 +39,6 @@ def solve(matrix):
 		if(dist < shortestDistance):
 			correctOrder = order
 			shortestDistance = dist
-	printMatrix(correctOrder, matrix)
 	return [correctOrder, shortestDistance]
 
 def getDist(order, matrix, distMatrix):
